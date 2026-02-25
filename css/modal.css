@@ -1,0 +1,376 @@
+/* =========================================================
+   MODAL.CSS – Login Modal + Demo Section Styles
+   Palotai Dániel AI Oktatói Portfólió
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   MODAL OVERLAY
+   --------------------------------------------------------- */
+#modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#modal-overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---------------------------------------------------------
+   LOGIN MODAL
+   --------------------------------------------------------- */
+#login-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    width: min(480px, calc(100vw - 2rem));
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-modal);
+    padding: 2.5rem;
+    z-index: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow:
+        0 0 0 1px var(--color-border),
+        0 24px 48px rgba(0, 0, 0, 0.5),
+        0 0 80px var(--color-primary-glow);
+}
+
+#login-modal.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.modal-close-btn:hover {
+    color: var(--color-text);
+}
+
+.modal-badge {
+    margin-bottom: 1.25rem;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.modal-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 1.75rem;
+}
+
+/* Auth form */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Error message */
+#auth-error {
+    display: none;
+    font-size: 0.875rem;
+    color: var(--color-error);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-btn);
+    padding: 0.75rem 1rem;
+}
+
+/* Success state */
+#login-success {
+    display: none;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.auth-success-icon {
+    font-size: 2.5rem;
+    color: var(--color-success);
+    margin-bottom: 0.75rem;
+}
+
+#login-success h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-success);
+}
+
+#login-success p {
+    font-size: 0.9rem;
+}
+
+/* ---------------------------------------------------------
+   DEMO SECTION – teljes átdolgozás (Milestone 3)
+   --------------------------------------------------------- */
+#demo {
+    padding: var(--section-pad) 0;
+    position: relative;
+}
+
+/* Demo gate – bejelentkező CTA, ha nincs session */
+#demo-gate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 4rem 2rem;
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    position: relative;
+    overflow: hidden;
+    max-width: 600px;
+    margin: 2rem auto 0;
+}
+
+#demo-gate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.04), transparent 60%);
+    pointer-events: none;
+}
+
+.demo-gate-icon {
+    font-size: 2.5rem;
+    opacity: 0.7;
+}
+
+.demo-gate-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.demo-gate-desc {
+    font-size: 0.9375rem;
+    max-width: 400px;
+}
+
+/* Demo content – csak bejelentkezett usernek */
+#demo-content {
+    display: none;
+    max-width: 860px;
+    margin: 2rem auto 0;
+}
+
+.demo-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.demo-controls {
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.demo-controls h3 {
+    font-size: 1rem;
+    color: var(--color-text);
+}
+
+.demo-select {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    padding: 0.75rem 1rem;
+    width: 100%;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+
+.demo-select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.demo-select option {
+    background: var(--color-surface);
+    color: var(--color-text);
+}
+
+/* Demo result panel */
+.demo-output {
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 2rem;
+    min-height: 200px;
+}
+
+/* Loading skeleton */
+#demo-loading {
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.loading-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+}
+
+/* Error state */
+#demo-error {
+    display: none;
+    font-size: 0.875rem;
+    color: var(--color-error);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius-btn);
+    padding: 0.75rem 1rem;
+}
+
+/* Result content */
+#demo-result {
+    display: none;
+}
+
+.demo-result-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.demo-result-topic {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+}
+
+.demo-result-body {
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--color-text);
+}
+
+.demo-result-body h1,
+.demo-result-body h2,
+.demo-result-body h3 {
+    font-family: var(--font-heading);
+    color: var(--color-text);
+    margin: 1.25rem 0 0.5rem;
+}
+
+.demo-result-body h2 {
+    font-size: 1.1rem;
+}
+
+.demo-result-body h3 {
+    font-size: 1rem;
+    color: var(--color-primary);
+}
+
+.demo-result-body p {
+    color: var(--color-text-muted);
+    margin: 0.5rem 0;
+}
+
+.demo-result-body ul {
+    list-style: none;
+    margin: 0.5rem 0;
+    padding: 0;
+}
+
+.demo-result-body li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+}
+
+.demo-result-body li::before {
+    content: '→';
+    color: var(--color-primary);
+    flex-shrink: 0;
+    font-weight: 600;
+}
+
+.demo-result-body strong {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+@media (max-width: 760px) {
+    .demo-panel {
+        grid-template-columns: 1fr;
+    }
+
+    #login-modal {
+        padding: 1.75rem;
+    }
+}

@@ -1,0 +1,207 @@
+/* =========================================================
+   COMPONENTS.CSS – Reusable UI Components
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   GLASSMORPHISM CARD
+   --------------------------------------------------------- */
+.card {
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: 2rem;
+}
+
+.card--solid {
+    background: var(--color-surface);
+    backdrop-filter: none;
+}
+
+/* ---------------------------------------------------------
+   BUTTONS
+   --------------------------------------------------------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    padding: 0.75rem 1.75rem;
+    border-radius: var(--radius-btn);
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: box-shadow 0.3s ease, transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+    white-space: nowrap;
+}
+
+/* Primary CTA */
+.btn--primary {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+.btn--primary:hover {
+    box-shadow: 0 0 35px var(--color-primary-glow);
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+.btn--primary:active {
+    transform: translateY(0);
+}
+
+/* Ghost / Outline */
+.btn--ghost {
+    background: transparent;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn--ghost:hover {
+    background: rgba(14, 165, 233, 0.1);
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+/* Accent variant */
+.btn--accent {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 20px var(--color-accent-glow);
+}
+
+.btn--accent:hover {
+    box-shadow: 0 0 35px var(--color-accent-glow);
+    transform: translateY(-2px);
+    opacity: 1;
+}
+
+/* Disabled state */
+.btn:disabled,
+.btn--disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Button sizes */
+.btn--sm {
+    font-size: 0.875rem;
+    padding: 0.5rem 1.25rem;
+}
+
+.btn--lg {
+    font-size: 1rem;
+    padding: 0.875rem 2.25rem;
+}
+
+/* ---------------------------------------------------------
+   INPUT FIELDS
+   --------------------------------------------------------- */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-label {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+.input {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    padding: 0.75rem 1rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.6;
+}
+
+.input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.input--error {
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.input-hint {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+}
+
+.input-hint--error {
+    color: var(--color-error);
+}
+
+/* ---------------------------------------------------------
+   BADGE / CHIP
+   --------------------------------------------------------- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--color-accent-glow);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: 4px;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 2px 10px;
+    text-transform: uppercase;
+}
+
+.badge--primary {
+    background: var(--color-primary-glow);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.badge--success {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.badge--error {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-error);
+    border-color: var(--color-error);
+}
+
+/* ---------------------------------------------------------
+   DIVIDER (section separator)
+   --------------------------------------------------------- */
+.divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--color-accent), transparent);
+    margin: 3rem 0;
+    opacity: 0.5;
+}

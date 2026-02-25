@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design System – Kitchen Sink | Palotai Dániel Portfólió</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Preconnect for Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+
+  <style>
+    /* ---- Kitchen Sink page specifics ---- */
+    .ds-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--color-border);
+      padding: 1rem 0;
+    }
+
+    .ds-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .ds-nav-logo {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--color-text);
+    }
+
+    .ds-nav-logo span {
+      color: var(--color-primary);
+    }
+
+    .ds-nav-links {
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .ds-nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      transition: color 0.2s;
+    }
+
+    .ds-nav-links a:hover {
+      color: var(--color-primary);
+    }
+
+    /* Section block */
+    .ds-section {
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .ds-section:last-child {
+      border-bottom: none;
+    }
+
+    .ds-section-title {
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .ds-section h2 {
+      font-size: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Colour swatches */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+
+    .swatch {
+      border-radius: var(--radius-card);
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+
+    .swatch-color {
+      height: 80px;
+    }
+
+    .swatch-meta {
+      padding: 0.75rem;
+      background: var(--color-surface);
+    }
+
+    .swatch-token {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--color-primary);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .swatch-hex {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+
+    .swatch-name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text);
+      display: block;
+    }
+
+    /* Typography demo */
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .type-row:last-child { border-bottom: none; }
+
+    .type-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      min-width: 100px;
+      flex-shrink: 0;
+    }
+
+    /* Button & Input row */
+    .component-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem 0;
+    }
+
+    .component-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
+      min-width: 80px;
+    }
+
+    /* Input demo container */
+    .input-demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    /* Animation demo card */
+    .anim-demo-card {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1.5rem 2rem;
+      background: var(--color-surface-glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .anim-demo-card:hover {
+      border-color: var(--color-primary);
+    }
+
+    .anim-demo-card .badge {
+      pointer-events: none;
+    }
+
+    /* Orb background */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: var(--color-primary-glow);
+      top: -120px;
+      right: -80px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: var(--color-accent-glow);
+      bottom: 10%;
+      left: -100px;
+    }
+
+    body > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Replay btn */
+    #replay-btn {
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background orbs -->
+  <div class="orb orb-1 anim-glow-pulse" aria-hidden="true"></div>
+  <div class="orb orb-2 anim-glow-pulse" style="animation-delay: -3s;" aria-hidden="true"></div>
+
+  <!-- STICKY NAV -->
+  <nav class="ds-nav" aria-label="Design System navigation">
+    <div class="container ds-nav-inner">
+      <span class="ds-nav-logo">Dániel<span>.dev</span> – Design System</span>
+      <div class="ds-nav-links">
+        <a href="#colours">Színek</a>
+        <a href="#typography">Tipográfia</a>
+        <a href="#buttons">Gombok</a>
+        <a href="#inputs">Inputok</a>
+        <a href="#cards">Kártyák</a>
+        <a href="#badges">Badge-ek</a>
+        <a href="#animations">Animációk</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <div style="padding: 5rem 0 2rem;">
+      <div class="container">
+        <p class="ds-section-title">Kitchen Sink · Vizuális Validáció</p>
+        <h1 class="anim-slide-in-left">Design Rendszer</h1>
+        <p style="max-width:560px; margin-top:0.75rem;" class="anim-fade-in-up anim-delay-200">
+          Ez az oldal az összes design token és komponens élő demonstrációja.
+          Kérjük Dániel visszajelzését a design-ról, mielőtt a valódi <code>index.html</code> kész lesz.
+        </p>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         1. COLOUR PALETTE
+    =========================================== -->
+    <section class="ds-section" id="colours">
+      <div class="container">
+        <p class="ds-section-title">01 · Tokens</p>
+        <h2>Színpaletta</h2>
+
+        <div class="swatch-grid">
+          <!-- Background -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:#0f172a;"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-bg</span>
+              <span class="swatch-name">Háttér</span>
+              <span class="swatch-hex">#0f172a</span>
+            </div>
+          </div>
+          <!-- Surface -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:#1e293b;"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-surface</span>
+              <span class="swatch-name">Felület</span>
+              <span class="swatch-hex">#1e293b</span>
+            </div>
+          </div>
+          <!-- Surface Glass -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:rgba(30,41,59,0.6); border-bottom:1px solid rgba(255,255,255,0.08);"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-surface-glass</span>
+              <span class="swatch-name">Glass felület</span>
+              <span class="swatch-hex">rgba(30,41,59,0.6)</span>
+            </div>
+          </div>
+          <!-- Primary -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:#0ea5e9;"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-primary</span>
+              <span class="swatch-name">Elsődleges</span>
+              <span class="swatch-hex">#0ea5e9</span>
+            </div>
+          </div>
+          <!-- Primary Glow -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:rgba(14,165,233,0.25);"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-primary-glow</span>
+              <span class="swatch-name">Elsőd. glow</span>
+              <span class="swatch-hex">rgba(14,165,233,0.25)</span>
+            </div>
+          </div>
+          <!-- Accent -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:#8b5cf6;"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-accent</span>
+              <span class="swatch-name">Akcentus</span>
+              <span class="swatch-hex">#8b5cf6</span>
+            </div>
+          </div>
+          <!-- Accent Glow -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:rgba(139,92,246,0.2);"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-accent-glow</span>
+              <span class="swatch-name">Akcent. glow</span>
+              <span class="swatch-hex">rgba(139,92,246,0.2)</span>
+            </div>
+          </div>
+          <!-- Text -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:#f1f5f9;"></div>
+            <div class="swatch-meta" style="background:#0f172a;">
+              <span class="swatch-token">--color-text</span>
+              <span class="swatch-name">Alap szöveg</span>
+              <span class="swatch-hex">#f1f5f9</span>
+            </div>
+          </div>
+          <!-- Text Muted -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:#94a3b8;"></div>
+            <div class="swatch-meta" style="background:#0f172a;">
+              <span class="swatch-token">--color-text-muted</span>
+              <span class="swatch-name">Másodl. szöveg</span>
+              <span class="swatch-hex">#94a3b8</span>
+            </div>
+          </div>
+          <!-- Success -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:#10b981;"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-success</span>
+              <span class="swatch-name">Siker</span>
+              <span class="swatch-hex">#10b981</span>
+            </div>
+          </div>
+          <!-- Error -->
+          <div class="swatch">
+            <div class="swatch-color" style="background:#ef4444;"></div>
+            <div class="swatch-meta">
+              <span class="swatch-token">--color-error</span>
+              <span class="swatch-name">Hiba</span>
+              <span class="swatch-hex">#ef4444</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         2. TYPOGRAPHY
+    =========================================== -->
+    <section class="ds-section" id="typography">
+      <div class="container">
+        <p class="ds-section-title">02 · Tipográfia</p>
+        <h2>Betűrendszer</h2>
+
+        <div class="type-row">
+          <span class="type-label">h1 · Outfit 800<br>clamp(2.5–4rem)</span>
+          <h1>Ne csak tanulj az AI-ról.</h1>
+        </div>
+        <div class="type-row">
+          <span class="type-label">h2 · Outfit 700<br>clamp(1.75–2.5rem)</span>
+          <h2>Gyakorlati AI Oktatás</h2>
+        </div>
+        <div class="type-row">
+          <span class="type-label">h3 · Outfit 700<br>1.25rem</span>
+          <h3>Modul 1: Túl a ChatGPT-n</h3>
+        </div>
+        <div class="type-row">
+          <span class="type-label">body · Inter 400<br>1rem / 1.7</span>
+          <p style="max-width:600px; color: var(--color-text);">
+            Bő egy éve foglalkozom mesterséges intelligenciával, és létrehoztam
+            a ShiftCore nevű vállalkozást, amelyben magyar kkv-knak nyújtunk
+            automatizálási megoldásokat.
+          </p>
+        </div>
+        <div class="type-row">
+          <span class="type-label">muted · Inter 400<br>1rem</span>
+          <p style="max-width:600px;">
+            Ez az oldalt egy AI ügynök építette – az én iránymutatásaim alapján.
+            A tökéletes kód = a kompetencia demonstrációja.
+          </p>
+        </div>
+        <div class="type-row">
+          <span class="type-label">mono · JetBrains Mono<br>0.875rem</span>
+          <code style="font-family:var(--font-mono); color:var(--color-primary); font-size:0.875rem;">
+            supabase.functions.invoke('generate-demo')
+          </code>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         3. BUTTONS
+    =========================================== -->
+    <section class="ds-section" id="buttons">
+      <div class="container">
+        <p class="ds-section-title">03 · Komponensek</p>
+        <h2>Gombok</h2>
+
+        <div class="component-row">
+          <span class="component-label">Primary</span>
+          <button class="btn btn--primary">Demo indítása</button>
+          <button class="btn btn--primary btn--lg">Tematikák megtekintése</button>
+          <button class="btn btn--primary btn--sm">Kis gomb</button>
+        </div>
+
+        <div class="component-row">
+          <span class="component-label">Ghost</span>
+          <button class="btn btn--ghost">PDF CV Letöltése</button>
+          <button class="btn btn--ghost btn--lg">Tovább</button>
+          <button class="btn btn--ghost btn--sm">Kis ghost</button>
+        </div>
+
+        <div class="component-row">
+          <span class="component-label">Accent</span>
+          <button class="btn btn--accent">Kapcsolat</button>
+          <button class="btn btn--accent btn--sm">Kis accent</button>
+        </div>
+
+        <div class="component-row">
+          <span class="component-label">Disabled</span>
+          <button class="btn btn--primary btn--disabled" disabled>Betöltés...</button>
+          <button class="btn btn--ghost btn--disabled" disabled>Nem elérhető</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         4. INPUTS
+    =========================================== -->
+    <section class="ds-section" id="inputs">
+      <div class="container">
+        <p class="ds-section-title">04 · Komponensek</p>
+        <h2>Input Mezők</h2>
+        <div class="input-demo-grid">
+
+          <!-- Default -->
+          <div class="input-group">
+            <label class="input-label" for="demo-email-default">Email (default)</label>
+            <input
+              id="demo-email-default"
+              class="input"
+              type="email"
+              placeholder="daniel@shiftcore.hu"
+            />
+            <span class="input-hint">Kizárólag Euzert/Certop email cím fogadható el.</span>
+          </div>
+
+          <!-- Focus (simulated via class) -->
+          <div class="input-group">
+            <label class="input-label" for="demo-email-focus">Email (focus állapot)</label>
+            <input
+              id="demo-email-focus"
+              class="input"
+              type="email"
+              placeholder="Kattints rám!"
+              onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='0 0 0 3px var(--color-primary-glow)';"
+              onblur="this.style.borderColor=''; this.style.boxShadow='';"
+            />
+            <span class="input-hint">Kattints a focus-efekt megtekintéséhez.</span>
+          </div>
+
+          <!-- Error -->
+          <div class="input-group">
+            <label class="input-label" for="demo-email-error">Email (hiba)</label>
+            <input
+              id="demo-email-error"
+              class="input input--error"
+              type="email"
+              value="nemjo@gmail.com"
+            />
+            <span class="input-hint input-hint--error">Ez az email cím nincs a meghívólistán.</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         5. GLASSMORPHISM CARD
+    =========================================== -->
+    <section class="ds-section" id="cards">
+      <div class="container">
+        <p class="ds-section-title">05 · Komponensek</p>
+        <h2>Glassmorphism Kártya</h2>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:1.5rem;">
+
+          <!-- Glass card -->
+          <div class="card anim-fade-in-up">
+            <span class="badge" style="margin-bottom:1rem;">AI Showcase</span>
+            <h3 style="margin-bottom:0.5rem;">AI-asszisztált tananyag tervezés</h3>
+            <p style="margin-bottom:1.25rem;">
+              Hogyan segít a mesterséges intelligencia a trénereknek személyre szabott,
+              adaptív tananyagok készítésében 10 percen belül?
+            </p>
+            <button class="btn btn--primary btn--sm">Demo megtekintése</button>
+          </div>
+
+          <!-- Solid card -->
+          <div class="card card--solid anim-fade-in-up anim-delay-200">
+            <span class="badge badge--primary" style="margin-bottom:1rem;">Modul 2</span>
+            <h3 style="margin-bottom:0.5rem;">Automatizált Workflow-k</h3>
+            <p style="margin-bottom:1.25rem;">
+              Valós üzleti folyamatok optimalizálása AI ügynökökkel –
+              a repetitív feladatoktól az intelligens döntéstámogatásig.
+            </p>
+            <button class="btn btn--ghost btn--sm">Tematika</button>
+          </div>
+
+          <!-- Success feedback card -->
+          <div class="card anim-fade-in-up anim-delay-300" style="border-color: rgba(16,185,129,0.3);">
+            <span class="badge badge--success" style="margin-bottom:1rem;">Sikeresen bejelentkezve</span>
+            <h3 style="margin-bottom:0.5rem; color: var(--color-success);">Üdvözöljük!</h3>
+            <p>
+              Hozzáférést kapott az interaktív demo szekciókhoz.
+              Válasszon témát a kipróbáláshoz.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         6. BADGES / CHIPS
+    =========================================== -->
+    <section class="ds-section" id="badges">
+      <div class="container">
+        <p class="ds-section-title">06 · Komponensek</p>
+        <h2>Badge / Chip</h2>
+        <div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center;">
+          <span class="badge">Akcentus</span>
+          <span class="badge badge--primary">Elsődleges</span>
+          <span class="badge badge--success">Sikeres</span>
+          <span class="badge badge--error">Hiba</span>
+          <span class="badge" style="background:rgba(14,165,233,0.10); color:var(--color-text-muted); border-color:var(--color-border);">Inaktív</span>
+        </div>
+
+        <p class="ds-section-title" style="margin-top:2.5rem;">Használat kontextusban</p>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem;">
+          <div style="display:flex; align-items:center; gap:0.75rem; background:var(--color-surface); padding:0.75rem 1.25rem; border-radius:var(--radius-card); border:1px solid var(--color-border);">
+            <span class="badge">Modul 1</span>
+            <span style="font-weight:600; color:var(--color-text);">Túl a ChatGPT-n</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.75rem; background:var(--color-surface); padding:0.75rem 1.25rem; border-radius:var(--radius-card); border:1px solid var(--color-border);">
+            <span class="badge badge--primary">Modul 2</span>
+            <span style="font-weight:600; color:var(--color-text);">Workflow-k</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.75rem; background:var(--color-surface); padding:0.75rem 1.25rem; border-radius:var(--radius-card); border:1px solid var(--color-border);">
+            <span class="badge" style="background:rgba(139,92,246,0.1); color:var(--color-accent); border-color:var(--color-accent);">Modul 3</span>
+            <span style="font-weight:600; color:var(--color-text);">AI tréner-asszisztens</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         7. ANIMATIONS
+    =========================================== -->
+    <section class="ds-section" id="animations">
+      <div class="container">
+        <p class="ds-section-title">07 · Animációk</p>
+        <h2>Micro-interactions Demo</h2>
+
+        <p style="margin-bottom:2rem; color:var(--color-text-muted);">
+          Görgess le a kártyákhoz, hogy megfigyeld a <code style="font-family:var(--font-mono); color:var(--color-primary); font-size:0.8125rem;">fadeInUp</code> scroll-reveal animációt.
+          A gomb megnyomásával újra lejátszhatod.
+        </p>
+
+        <!-- Replay button -->
+        <button class="btn btn--ghost btn--sm" id="replay-btn">↺ Animáció újra</button>
+
+        <div id="anim-cards" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:1.5rem; margin-top:2rem;">
+          <div class="anim-demo-card anim-fade-in-up anim-delay-100">
+            <span>fadeInUp</span>
+            <span class="badge">0.1s késleltetés</span>
+          </div>
+          <div class="anim-demo-card anim-fade-in-up anim-delay-200">
+            <span>fadeInUp</span>
+            <span class="badge badge--primary">0.2s késleltetés</span>
+          </div>
+          <div class="anim-demo-card anim-fade-in-up anim-delay-300">
+            <span>fadeInUp</span>
+            <span class="badge" style="background:rgba(139,92,246,0.1); color:var(--color-accent); border-color:var(--color-accent);">0.3s késleltetés</span>
+          </div>
+          <div class="anim-demo-card anim-fade-in-up anim-delay-400">
+            <span>fadeInUp</span>
+            <span class="badge badge--success">0.4s késleltetés</span>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- Typing cursor demo -->
+        <h3 class="typing-cursor" style="margin-top:1rem; display:inline-block; font-size:1.5rem;">
+          Egy AI ügynök építette
+        </h3>
+
+        <p style="margin-top:0.5rem; font-size:0.875rem;">
+          ↑ Typing cursor effekt (CSS only, <code style="font-family:var(--font-mono); font-size:0.8125rem;">.typing-cursor</code>)
+        </p>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer style="padding:2.5rem 0; border-top:1px solid var(--color-border);">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+      <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--color-text-muted);">
+        design-system.html · Vizuális validáció · 2026
+      </span>
+      <span style="font-size:0.8125rem; color:var(--color-text-muted);">
+        Palotai Dániel · <span style="color:var(--color-primary);">ShiftCore</span>
+      </span>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    /* Replay animation button */
+    document.getElementById('replay-btn').addEventListener('click', () => {
+      const cards = document.querySelectorAll('#anim-cards .anim-fade-in-up');
+      cards.forEach((card) => {
+        card.classList.remove('is-visible');
+        void card.offsetWidth; // reflow trigger
+        card.classList.add('is-visible');
+      });
+    });
+  </script>
+</body>
+</html>

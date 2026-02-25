@@ -1,0 +1,144 @@
+/* =========================================================
+   MAIN.CSS – Palotai Dániel AI Oktatói Portfólió
+   Design System Custom Properties & Base Styles
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+   --------------------------------------------------------- */
+:root {
+  /* Colours */
+  --color-bg:             #0f172a;
+  --color-surface:        #1e293b;
+  --color-surface-glass:  rgba(30, 41, 59, 0.6);
+  --color-primary:        #0ea5e9;
+  --color-primary-glow:   rgba(14, 165, 233, 0.25);
+  --color-accent:         #8b5cf6;
+  --color-accent-glow:    rgba(139, 92, 246, 0.2);
+  --color-text:           #f1f5f9;
+  --color-text-muted:     #94a3b8;
+  --color-border:         rgba(255, 255, 255, 0.08);
+  --color-success:        #10b981;
+  --color-error:          #ef4444;
+
+  /* Typography */
+  --font-heading: 'Outfit', system-ui, sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing & Layout */
+  --radius-card:   12px;
+  --radius-btn:    8px;
+  --radius-modal:  16px;
+  --max-width:     1200px;
+  --section-pad:   clamp(4rem, 8vw, 8rem);
+  --container-pad: clamp(1rem, 5vw, 2rem);
+}
+
+/* ---------------------------------------------------------
+   2. RESET & BASE
+   --------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+/* ---------------------------------------------------------
+   3. TYPOGRAPHY SCALE
+   --------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+/* ---------------------------------------------------------
+   4. LAYOUT UTILITIES
+   --------------------------------------------------------- */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+}
+
+section {
+  padding: var(--section-pad) 0;
+}
+
+/* ---------------------------------------------------------
+   5. REDUCED MOTION
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

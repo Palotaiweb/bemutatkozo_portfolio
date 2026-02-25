@@ -1,0 +1,153 @@
+/* =========================================================
+   ANIMATIONS.CSS – Keyframes & Micro-interactions
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   FADE IN UP (Scroll reveal)
+   --------------------------------------------------------- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(32px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Base state for animated elements (hidden before JS kicks in) */
+.anim-fade-in-up {
+    opacity: 0;
+    transform: translateY(32px);
+}
+
+/* Class added by Intersection Observer when element enters viewport */
+.anim-fade-in-up.is-visible {
+    animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Stagger delays for grouped elements */
+.anim-delay-100 {
+    animation-delay: 0.1s;
+}
+
+.anim-delay-200 {
+    animation-delay: 0.2s;
+}
+
+.anim-delay-300 {
+    animation-delay: 0.3s;
+}
+
+.anim-delay-400 {
+    animation-delay: 0.4s;
+}
+
+.anim-delay-500 {
+    animation-delay: 0.5s;
+}
+
+/* ---------------------------------------------------------
+   SLIDE IN FROM LEFT (Hero name / logo)
+   --------------------------------------------------------- */
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.anim-slide-in-left {
+    animation: slideInLeft 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ---------------------------------------------------------
+   TYPING CURSOR (Hero headline effect)
+   --------------------------------------------------------- */
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.typing-cursor::after {
+    content: '|';
+    color: var(--color-primary);
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+}
+
+/* ---------------------------------------------------------
+   GLOW PULSE (Decorative background orb)
+   --------------------------------------------------------- */
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        opacity: 0.35;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.55;
+        transform: scale(1.08);
+    }
+}
+
+.anim-glow-pulse {
+    animation: glowPulse 6s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------
+   FLOAT (Subtle levitation for decorative elements)
+   --------------------------------------------------------- */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.anim-float {
+    animation: float 5s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------
+   REDUCED MOTION OVERRIDES
+   (also handled globally in main.css, repeated here for clarity)
+   --------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+
+    .anim-fade-in-up,
+    .anim-slide-in-left,
+    .typing-cursor::after,
+    .anim-glow-pulse,
+    .anim-float {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+
+    .anim-fade-in-up {
+        opacity: 1;
+        transform: none;
+    }
+}
