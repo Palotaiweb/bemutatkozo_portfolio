@@ -10,17 +10,18 @@
 - [x] 👤 Milestone 2: Rólam + Képzőhely Fókusz + Tematikák – KÉSZ (2026-02-23)
 - [x] 🔄 Koncepció Váltás – KÉSZ (2026-02-25)
 - [x] ✏️ Szövegezés javítása + UI finomhangolás – KÉSZ (2026-02-25 délután)
-- [ ] 🔧 Milestone 4: Csiszolás és Teljesítmény (Folyamatban - Appwrite és n8n későbbre halasztva)
-- [ ] ✅ Milestone 5: Pre-Flight Quality Gate + Netlify Deploy (PRIORITÁS: Deploy Ma!)
+- [x] 🔧 Milestone 4: Csiszolás és Teljesítmény (frontend UI/UX kész)
+- [x] ✅ Milestone 5: Pre-Flight Quality Gate + Netlify Deploy (Deployolva a 'bemutatkozo_portfolio' repóból)
+- [ ] 🤖 Milestone 6: Appwrite DB + n8n Workflow integráció (KÖVETKEZŐ LÉPÉS)
 
 ---
 
 ## 🚀 Jelenlegi Aktív Feladat
 
-**Következő lépés a kódoló AI számára:**
-1. Készítsd elő az oldalt a Netlify deploy-ra (Pre-Flight Quality Gate ellenőrzések).
-2. Tedd ki az oldalt élesbe, hogy az Euzert meg tudja tekinteni.
-3. Az Appwrite és n8n integrációkat **KÉSŐBBRE HALASZTANI**.
+**Következő lépés a kódoló AI számára (Következő Session):**
+1. Appwrite projekt konfigurálása (adatbázis és séma) és `projectId` beállítása.
+2. n8n webhook összeállítása a generálásokhoz (és a webhook URL beállítása a frontenden).
+3. Az integráció tesztelése a bejelentkezett felhasználókkal és a RAG chatbot "életre keltése".
 
 ---
 
@@ -60,6 +61,11 @@
 - Antigravity kártya szövege finomítva
 - Ikonok lecserélve (Tool kártya emojik lecserélve egyedi, Tech-elegance SVG ikonokra színátmenetekkel)
 
+### Deploy Műveletek (2026-02-25 este):
+- Frontend kód szekurizálva (nincsenek hardcodolt titkos kulcsok).
+- Kód feltöltve a `bemutatkozo_portfolio` GitHub repóba.
+- A tároló sikeresen összekötve a Netlify-al, a statikus oldal élesedett.
+
 ### Technikai / CSS változások:
 
 - **HTML entitások konvertálva:** Az összes `&#xxx;` numerikus entitás valódi UTF-8 karakterré alakítva (`HtmlDecode` PowerShell scripttel)
@@ -85,12 +91,9 @@
 
 ## 🚧 Következő Lépés / Blokkerek
 
-- **PRIORITÁS:** Az oldal élesítése Netlify-ra még MA (Euzert bemutató miatt).
-- **Blokkerek a deploy-hoz:**
-  - Netlify deploy neve + OG image – Dániel döntése.
-- **Későbbre halasztott feladatok:**
-  - *Blocker 1:* Az Appwrite `projectId` még placeholder (`REPLACE_WITH_YOUR_PROJECT_ID`)
-  - *Blocker 2:* `N8N_WEBHOOK_URL` üres – a RAG flow a weboldal után készül
+- **Blokkerek a Milestone 6-hoz (n8n & Appwrite Backend):**
+  - *Blocker 1:* Az Appwrite `projectId` még placeholder (`REPLACE_WITH_YOUR_PROJECT_ID`) a HTML-ben.
+  - *Blocker 2:* `N8N_WEBHOOK_URL` üres – a RAG flow beérkező webhookja még kialakításra vár az n8n szerveren.
 
 ---
 
