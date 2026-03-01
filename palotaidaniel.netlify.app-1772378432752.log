@@ -1,0 +1,21 @@
+(index):1 Access to fetch at 'https://fra.cloud.appwrite.io/v1/account' from origin 'https://palotaidaniel.netlify.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fra.cloud.appwrite.io/v1/account:1  Failed to load resource: net::ERR_FAILED
+(index):1 Access to fetch at 'https://fra.cloud.appwrite.io/v1/account/sessions/email' from origin 'https://palotaidaniel.netlify.app' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+sdk.js:421  POST https://fra.cloud.appwrite.io/v1/account/sessions/email net::ERR_FAILED 403 (Forbidden)
+(anonymous) @ sdk.js:421
+(anonymous) @ sdk.js:25
+t @ sdk.js:21
+call @ sdk.js:378
+(anonymous) @ sdk.js:1222
+(anonymous) @ sdk.js:25
+t @ sdk.js:21
+createEmailPasswordSession @ sdk.js:1206
+loginWithEmail @ auth.js:91
+(anonymous) @ auth.js:223
+auth.js:95 [auth] Login hiba: AppwriteException: Failed to fetch
+    at Object.<anonymous> (sdk.js:444:27)
+    at Generator.throw (<anonymous>)
+    at a (sdk.js:23:68)
+loginWithEmail @ auth.js:95
+await in loginWithEmail
+(anonymous) @ auth.js:223

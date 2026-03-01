@@ -197,7 +197,7 @@ function initChat() {
   if (messagesEl && messagesEl.children.length === 0) {
     appendBubble(
       'ai',
-      'Szia! Kérdezz az Euzert kurzus tartalmáról. Miben segíthetek?'
+      'Szia! Kérdezz a Prompt Engineering képzések tartalmáról. Miben segíthetek?'
     );
   }
 
