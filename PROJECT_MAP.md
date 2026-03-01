@@ -88,10 +88,12 @@ Az összes workflow hiba kijavítva (2026-03-01). Következő lépés: éles tes
 - Antigravity kártya szövege finomítva
 - Ikonok lecserélve (Tool kártya emojik lecserélve egyedi, Tech-elegance SVG ikonokra színátmenetekkel)
 
-### Deploy Műveletek (2026-02-25 este):
+### Deploy Műveletek (2026-02-25 este és 2026-03-01):
 - Frontend kód szekurizálva (nincsenek hardcodolt titkos kulcsok).
 - Kód feltöltve a `bemutatkozo_portfolio` GitHub repóba.
 - A tároló sikeresen összekötve a Netlify-al, a statikus oldal élesedett.
+- Login fal integrálva (Domainek felvéve Appwrite-ban a CORS due to).
+- N8n Chatbot élesítve és ellenőrizve.
 
 ### Technikai / CSS változások:
 
@@ -118,11 +120,8 @@ Az összes workflow hiba kijavítva (2026-03-01). Következő lépés: éles tes
 
 ## 🚧 Következő Lépés / Blokkerek
 
-- **Éles böngészős teszt:**
-  - `npx serve . -p 3000` → bejelentkezés Appwrite email/jelszóval → chat üzenet küldése → ellenőrizni, hogy Gemini válaszol-e.
-  - Ha a JWT érvényes, a workflow most már: Webhook → JWT Checker (X-Appwrite-JWT) → IF true → AI Agent → Respond Success (200 JSON)
-- **Deploy GitHub és Netlify segítségével:**
-  - Az n8n hiba elhárítva. Push a `bemutatkozo_portfolio` repóba és Netlify rebuild.
+- **Nincsenek aktív blokkerek.** Az oldal éles, a funkciók (beleértve az Appwrite Email Logint és a biztonságos n8n webhook hívást token ellenőrzéssel is) működnek.
+- Esetleges jövőbeli finomhangolások vagy a kliens (Euzert/Certop) felé a link kiküldése.
 
 ---
 
