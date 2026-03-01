@@ -12,20 +12,47 @@
 - [x] ✏️ Szövegezés javítása + UI finomhangolás – KÉSZ (2026-02-25 délután)
 - [x] 🔧 Milestone 4: Csiszolás és Teljesítmény (frontend UI/UX kész)
 - [x] ✅ Milestone 5: Pre-Flight Quality Gate + Netlify Deploy (Deployolva a 'bemutatkozo_portfolio' repóból)
-- [ ] 🤖 Milestone 6: Appwrite DB + n8n Workflow integráció (KÖVETKEZŐ LÉPÉS)
+- [x] 🔒 Milestone 6/A: Appwrite Email/Password Login Wall integrálva (2026-03-01)
+- [x] 🤖 Milestone 6/B: n8n Chatbot Workflow megépítve és összekötve (2026-03-01)
+- [x] 🔐 Milestone 6/C: n8n Token Checker – Appwrite JWT server-oldali ellenőrzés (2026-03-01)
+- [x] 🐛 Milestone 6/D: n8n Workflow Bug Fix – 6 kritikus hiba javítva (2026-03-01)
 
 ---
 
 ## 🚀 Jelenlegi Aktív Feladat
 
-**Következő lépés a kódoló AI számára (Következő Session):**
-1. Appwrite projekt konfigurálása (adatbázis és séma) és `projectId` beállítása.
-2. n8n webhook összeállítása a generálásokhoz (és a webhook URL beállítása a frontenden).
-3. Az integráció tesztelése a bejelentkezett felhasználókkal és a RAG chatbot "életre keltése".
+**N8n workflow javítva – éles teszt szükséges**
 
----
+Az összes workflow hiba kijavítva (2026-03-01). Következő lépés: éles tesztelés a böngészőből (`npx serve . -p 3000` → bejelentkezés → chat).
 
-## ✅ Legutóbb Elvégzett Lépések (2026-02-25 délután)
+## ✅ Legutóbb Elvégzett Lépések (2026-03-01 – 3. session)
+
+### Milestone 6/C: n8n Token Checker integrálva és debuggolva (2026-03-01):
+- A `kEMTGb6JE2ZMZ6xh` n8n workflow frissítésre került.
+- A kliens oldali chat (amely minden kérésben beküld egy friss Appwrite JWT-t az `Authorization: Bearer` headerben) most már szerver-oldalon ki van értékelve.
+- A Webhook után betettünk egy HTTP Request node-ot, amely lekéri a `https://fra.cloud.appwrite.io/v1/account` profilt.
+- Ezt követi egy IF elágazás, ami a 200 OK választ várja. A hamis ágon egy 401 Unauthorized hibaüzenettel tér vissza azonnal, ha érvénytelen a token.
+- **Hiba javítási kísérlet:** Az Appwrite JWT Checker Request Node-ban aktiválva lett az `ignoreResponseCode: true` beállítás, hogy a 401 Unauthorized hiba ne állítsa le `NodeApiError`-ral a teljes n8n futást idő előtt.
+
+### n8n Chatbot Workflow megépítve (2026-03-01):
+
+- **Workflow neve:** Euzert RAG Chatbot (ID: `kEMTGb6JE2ZMZ6xh`) – aktív
+- **Architektúra:** Webhook → AI Agent ← Google Gemini Chat Model + Window Buffer Memory
+- **Webhook:** POST `/euzert-chat`, `responseMode: lastNode`, Production URL: `https://n8n.srv1189601.hstgr.cloud/webhook/euzert-chat`
+- **AI Agent:** typeVersion 3.1, bemenet: `{{ $json.body.message }}`, system promptban a teljes Euzert kurzus-tematika (Kezdő + Haladó kurzus, `prompt_engineering_tematika_for_rag.md` alapján)
+- **LLM:** Google Gemini Chat Model – `gemini-2.5-flash`, credential: `Google Gemini(PaLM) Api account`
+- **Memória:** Window Buffer Memory – typeVersion 1.3, session kulcs: `{{ $json.body.session_id }}`, 10 üzenet kontextus ablak
+- **Megjegyzés:** Ez technikailag **nem valódi RAG** (nincs vector DB), hanem system prompt alapú chatbot. A jelenlegi tudásbázis méreténél (2 kurzus tematika) ez elegendő és egyszerűbb megoldás.
+- **`index.html` frissítve:** `N8N_WEBHOOK_URL` átírva `localhost`-ról az éles URL-re (55. sor)
+- **Kliens-oldali JWT:** A `chat.js` minden kérésnél Appwrite JWT tokent generál és `Authorization: Bearer` fejlécként küldi (server-oldali ellenőrzés még nem implementált)
+- **Fejlesztői szerver:** `npx serve . -p 3000` → `http://localhost:3000`
+- **Tesztelve:** Chat működik, a Gemini válaszol a kurzus tartalmáról
+
+### Appwrite Auth Koncepció Váltás (Magic Link -> Email/Password):
+- **Full-Site Login Wall:** A korábbi, csak a RAG Chat-re vonatkozó gate és login modál elvetve. Az egész weblap el lett rejtve egy globális, üveghatású (glassmorphic) Login Wall mögé (`#global-login-wall`).
+- **Auth Logika Cseréje:** A Magic Linkes (`createMagicURLToken`) megoldást lecseréltük a hagyományos Email+Jelszó (`createEmailPasswordSession`) logikára.
+- **Session Kezelés:** Az `auth.js` felkészítve a session-state alapú teljes DOM megjelenítésre/elrejtésre (`#app-wrapper` vs `#global-login-wall`).
+- **Anonymous Session Fix:** Lekezelve egy hiba, ami miatt a háttérben létrejövő anonim munkamenetekkel is be lehetett jutni. Most kifejezetten a `session.email` jelenlétét várjuk a sikeres bejelentkezéshez.
 
 ### Szövegmódosítások (Dániel manuálisan + AI segítségével):
 
@@ -91,9 +118,11 @@
 
 ## 🚧 Következő Lépés / Blokkerek
 
-- **Blokkerek a Milestone 6-hoz (n8n & Appwrite Backend):**
-  - *Blocker 1:* Az Appwrite `projectId` még placeholder (`REPLACE_WITH_YOUR_PROJECT_ID`) a HTML-ben.
-  - *Blocker 2:* `N8N_WEBHOOK_URL` üres – a RAG flow beérkező webhookja még kialakításra vár az n8n szerveren.
+- **Éles böngészős teszt:**
+  - `npx serve . -p 3000` → bejelentkezés Appwrite email/jelszóval → chat üzenet küldése → ellenőrizni, hogy Gemini válaszol-e.
+  - Ha a JWT érvényes, a workflow most már: Webhook → JWT Checker (X-Appwrite-JWT) → IF true → AI Agent → Respond Success (200 JSON)
+- **Deploy GitHub és Netlify segítségével:**
+  - Az n8n hiba elhárítva. Push a `bemutatkozo_portfolio` repóba és Netlify rebuild.
 
 ---
 
@@ -103,14 +132,16 @@
 Header / Nav
   → Rólam   → Az AI a mindennapokban   → Amiért érdemes   [Kilépés gomb ha bejelentkezve]
 
-#hero      – Hero szekció ("Alkoss vele!" + eszközök megemlítve)
-[gradient divider – 6px, kék→lila]
-#about     – Rólam timeline + ShiftCore idézet + tech tagek
-#hook      – Régen vs. AI-jal összehasonlítás (2 kártya)
-#syllabus  – Miért AI? (3 előny kártya: Idő / Tudás / Minőség – nagy badge)
-#tools     – Eszközök showcase (Antigravity · Claude · Gemini · n8n)
-#chat      – RAG Chatbot szekció (login gate-tel védve)
-Modal      – Appwrite Magic Link login
+#global-login-wall – (Eltakar mindent, amíg nincs sikeres bejelentkezés)
+
+#app-wrapper       – (A tényleges tartalom, login után jelenik meg)
+  #hero            – Hero szekció ("Alkoss vele!" + eszközök megemlítve)
+  [gradient divider – 6px, kék→lila]
+  #about           – Rólam timeline + ShiftCore idézet + tech tagek
+  #hook            – Régen vs. AI-jal összehasonlítás (2 kártya)
+  #syllabus        – Miért AI? (3 előny kártya: Idő / Tudás / Minőség – nagy badge)
+  #tools           – Eszközök showcase (Antigravity · Claude · Gemini · n8n)
+  #chat            – RAG Chatbot szekció (nincs külön gate, mivel a főoldal védett)
 ```
 
 ---

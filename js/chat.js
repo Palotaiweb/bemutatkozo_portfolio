@@ -11,31 +11,12 @@
 /* ---------------------------------------------------------
    CONSTANTS
    --------------------------------------------------------- */
-const CHAT_GATE_ID    = 'chat-gate';
-const CHAT_PANEL_ID   = 'chat-panel';
-const CHAT_MSGS_ID    = 'chat-messages';
-const CHAT_INPUT_ID   = 'chat-input';
-const CHAT_SEND_ID    = 'chat-send-btn';
-const CHAT_LOGIN_BTN  = 'chat-login-btn';
+const CHAT_PANEL_ID = 'chat-panel';
+const CHAT_MSGS_ID = 'chat-messages';
+const CHAT_INPUT_ID = 'chat-input';
+const CHAT_SEND_ID = 'chat-send-btn';
 
-/* ---------------------------------------------------------
-   SESSION HELPER
-   Importálja az Appwrite account objektumot az auth.js-ből,
-   de defenzívan kezeli, ha az még nem inicializálódott.
-   --------------------------------------------------------- */
-async function getActiveSession() {
-  try {
-    if (
-      typeof window.__appwriteAccount === 'undefined' ||
-      window.__appwriteAccount === null
-    ) {
-      return null;
-    }
-    return await window.__appwriteAccount.getSession('current');
-  } catch {
-    return null;
-  }
-}
+
 
 /* ---------------------------------------------------------
    UI HELPERS
@@ -84,8 +65,8 @@ function getSessionId() {
 async function sendMessage(userText) {
   const webhookUrl = window.ENV?.N8N_WEBHOOK_URL;
 
-  const inputEl    = document.getElementById(CHAT_INPUT_ID);
-  const sendBtn    = document.getElementById(CHAT_SEND_ID);
+  const inputEl = document.getElementById(CHAT_INPUT_ID);
+  const sendBtn = document.getElementById(CHAT_SEND_ID);
 
   // UI: loading állapot
   if (inputEl) inputEl.disabled = true;
@@ -99,9 +80,32 @@ async function sendMessage(userText) {
       throw new Error('NO_WEBHOOK');
     }
 
+    // Appwrite JWT Token lekérése az n8n hitelesítéshez
+    let jwtToken = null;
+    try {
+      if (window.ENV?.APPWRITE_ENDPOINT && window.ENV?.APPWRITE_PROJECT_ID) {
+        const client = new Appwrite.Client();
+        client.setEndpoint(window.ENV.APPWRITE_ENDPOINT).setProject(window.ENV.APPWRITE_PROJECT_ID);
+        const account = new Appwrite.Account(client);
+
+        // Ez egy rövid élettartamú generált token, amivel az n8n bizonyosodhat a felhasználó jogosságáról
+        const jwtResponse = await account.createJWT();
+        jwtToken = jwtResponse?.jwt;
+      }
+    } catch (jwtErr) {
+      console.warn('[chat] JWT token lekérés sikertelen, folytatás token nélkül:', jwtErr);
+    }
+
+    // HTTP fejlécek összeállítása
+    const headers = { 'Content-Type': 'application/json' };
+    if (jwtToken) {
+      headers['Authorization'] = `Bearer ${jwtToken}`;
+    }
+
+    // Üzenet beküldése az n8n webhooknak
     const response = await fetch(webhookUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: headers,
       body: JSON.stringify({
         message: userText,
         session_id: getSessionId(),
@@ -180,50 +184,30 @@ function handleSend() {
 }
 
 /* ---------------------------------------------------------
-   GATE: mutat/elrejt Appwrite session alapján
+   INIT
    --------------------------------------------------------- */
-async function initChatGate() {
-  const gateEl  = document.getElementById(CHAT_GATE_ID);
-  const panelEl = document.getElementById(CHAT_PANEL_ID);
-  if (!gateEl || !panelEl) return;
 
-  const session = await getActiveSession();
+let isChatInitialized = false;
 
-  if (session) {
-    // Bejelentkezve → chat panel látható
-    gateEl.style.display  = 'none';
-    panelEl.style.display = 'flex';
+function initChat() {
+  if (isChatInitialized) return;
 
-    // Üdvözlő AI üzenet
+  // Üdvözlő AI üzenet, ha még nincs egy sem
+  const messagesEl = document.getElementById(CHAT_MSGS_ID);
+  if (messagesEl && messagesEl.children.length === 0) {
     appendBubble(
       'ai',
       'Szia! Kérdezz az Euzert kurzus tartalmáról. Miben segíthetek?'
     );
-    initChatInput();
-  } else {
-    // Nincs session → gate látható
-    gateEl.style.display  = 'flex';
-    panelEl.style.display = 'none';
-
-    // A „Bejelentkezés" gomb megnyitja a login modált
-    const loginBtn = document.getElementById(CHAT_LOGIN_BTN);
-    loginBtn?.addEventListener('click', () => {
-      // Ugyanaz a modál, mint a demo szekciónál
-      document.getElementById('login-modal')?.classList.add('is-open');
-      document.getElementById('modal-overlay')?.classList.add('is-open');
-      document.body.style.overflow = 'hidden';
-    });
   }
+
+  initChatInput();
+  isChatInitialized = true;
 }
 
-/* ---------------------------------------------------------
-   INIT
-   --------------------------------------------------------- */
-document.addEventListener('DOMContentLoaded', () => {
-  initChatGate();
-});
-
-// Ha az auth.js session-változást jelent (login/logout esemény), frissülj
+// Ha az auth.js session-változást jelent és sikeres (bejelentkeztünk), inicializáljuk a chatet
 window.addEventListener('appwrite:session-changed', () => {
-  initChatGate();
+  if (window.authSession) {
+    initChat();
+  }
 });

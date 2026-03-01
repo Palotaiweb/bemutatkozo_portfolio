@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="css/animations.css" />
     <link rel="stylesheet" href="css/hero.css" />
     <link rel="stylesheet" href="css/sections.css" />
-    <link rel="stylesheet" href="css/modal.css" />
+    <link rel="stylesheet" href="css/login.css" />
 
     <!-- =====================================================
        APPWRITE SDK (CDN) + PUBLIC CONFIG
@@ -49,10 +49,10 @@
     <!-- Publikus konfigurációs értékek – NEM tartalmaz titkos kulcsot! -->
     <script>
         window.ENV = {
-            APPWRITE_ENDPOINT: 'https://cloud.appwrite.io/v1',
-            APPWRITE_PROJECT_ID: 'REPLACE_WITH_YOUR_PROJECT_ID',
+            APPWRITE_ENDPOINT: 'https://fra.cloud.appwrite.io/v1',
+            APPWRITE_PROJECT_ID: '69a40cb7002feaec083b',
             // n8n RAG webhook – beállítandó a weboldal élesítése után
-            N8N_WEBHOOK_URL: '',
+            N8N_WEBHOOK_URL: 'https://n8n.srv1189601.hstgr.cloud/webhook/euzert-chat',
         };
     </script>
 </head>
@@ -60,490 +60,501 @@
 <body>
 
     <!-- =====================================================
-       SITE HEADER / NAV
-  ====================================================== -->
-    <header class="site-header" id="site-header" role="banner">
-        <div class="container header-inner">
-            <a href="#hero" class="logo" aria-label="Palotai Dániel – vissza a tetejére">
-                Shift<span>Core</span>
-            </a>
-            <nav class="nav-links" aria-label="Fő navigáció">
-                <a href="#about">Rólam</a>
-                <a href="#hook">Az AI a mindennapokban</a>
-                <a href="#syllabus">Amiért érdemes</a>
-                <button class="btn btn--ghost" id="nav-logout-btn"
-                    style="display:none; padding: 0.4rem 0.9rem; font-size:0.8125rem;">Kilépés</button>
-            </nav>
+       GLOBAL LOGIN WALL (Appwrite E-mail/Password)
+    ====================================================== -->
+    <div id="global-login-wall" role="dialog" aria-modal="true" aria-labelledby="login-title">
+        <div class="login-wall-card">
+            <div class="modal-badge">
+                <span class="badge badge--primary">Zárt rendszer</span>
+            </div>
+
+            <h2 class="modal-title" id="login-title">Bejelentkezés</h2>
+            <p class="modal-subtitle">A portfólió megtekintéséhez kérlek, jelentkezz be a kapott adatokkal.</p>
+
+            <!-- Login form -->
+            <form class="auth-form" id="login-form" novalidate>
+                <div id="auth-error" role="alert"></div>
+
+                <input type="email" id="login-email-input" class="input" placeholder="Email cím" autocomplete="email"
+                    required aria-label="Email cím" />
+
+                <input type="password" id="login-password-input" class="input" placeholder="Jelszó"
+                    autocomplete="current-password" required aria-label="Jelszó" />
+
+                <button type="submit" class="btn btn--primary" id="login-submit-btn"
+                    style="width:100%; justify-content:center;">
+                    Bejelentkezés
+                </button>
+            </form>
         </div>
-    </header>
+    </div>
 
     <!-- =====================================================
+       APP WRAPPER (minden más itt van, hidden alapból)
+  ====================================================== -->
+    <div id="app-wrapper" style="display:none;">
+
+        <!-- =====================================================
+           SITE HEADER / NAV
+      ====================================================== -->
+        <header class="site-header" id="site-header" role="banner">
+            <div class="container header-inner">
+                <a href="#hero" class="logo" aria-label="Palotai Dániel – vissza a tetejére">
+                    Shift<span>Core</span>
+                </a>
+                <nav class="nav-links" aria-label="Fő navigáció">
+                    <a href="#about">Rólam</a>
+                    <a href="#hook">Az AI a mindennapokban</a>
+                    <a href="#syllabus">Amiért érdemes</a>
+                    <button class="btn btn--ghost" id="nav-logout-btn"
+                        style="display:none; padding: 0.4rem 0.9rem; font-size:0.8125rem;">Kilépés</button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- =====================================================
        HERO SECTION
   ====================================================== -->
-    <section id="hero" aria-labelledby="hero-title">
+        <section id="hero" aria-labelledby="hero-title">
 
-        <!-- Background canvas for particle / dot grid anim -->
-        <canvas id="hero-canvas" aria-hidden="true"></canvas>
+            <!-- Background canvas for particle / dot grid anim -->
+            <canvas id="hero-canvas" aria-hidden="true"></canvas>
 
-        <!-- Glow orbs -->
-        <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
-        <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+            <!-- Glow orbs -->
+            <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+            <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
 
-        <div class="container">
-            <div class="hero-content">
+            <div class="container">
+                <div class="hero-content">
 
-                <!-- Live badge -->
-                <div class="hero-badge">
-                    <span class="badge badge--primary">Palotai Dániel</span>
-                    <span class="hero-badge-dot" aria-hidden="true"></span>
-                    <span class="badge"
-                        style="background:rgba(16,185,129,0.12); color:var(--color-success); border-color:var(--color-success);">
-                        Bemutatkozó Portfólió
-                    </span>
+                    <!-- Live badge -->
+                    <div class="hero-badge">
+                        <span class="badge badge--primary">Palotai Dániel</span>
+                        <span class="hero-badge-dot" aria-hidden="true"></span>
+                        <span class="badge"
+                            style="background:rgba(16,185,129,0.12); color:var(--color-success); border-color:var(--color-success);">
+                            Bemutatkozó Portfólió
+                        </span>
+                    </div>
+
+                    <!-- Headline -->
+                    <h1 class="hero-title" id="hero-title">
+                        Ne csak tanulj az AI-ról.<br />
+                        <span class="hero-title-accent">Alkoss vele!</span>
+                    </h1>
+
+                    <!-- Subheadline -->
+                    <p class="hero-subtitle">
+                        Ez az oldal egy AI ügynök segítségével épült. Létrehozásához a Google Antigravity,
+                        az Anthropic Claude nevű modellje, a Gemini és az n8n volt a segítségemre, melyet egy MCP
+                        szerveren
+                        keresztül értek el a modellek és segítettek annak létrehozásában.
+                    </p>
+
+                    <!-- CTA group -->
+                    <div class="hero-cta-group">
+                        <a href="#syllabus" class="btn btn--primary btn--lg" id="cta-tematikak">
+                            Az AI a mindennapokban
+                        </a>
+                    </div>
+
                 </div>
-
-                <!-- Headline -->
-                <h1 class="hero-title" id="hero-title">
-                    Ne csak tanulj az AI-ról.<br />
-                    <span class="hero-title-accent">Alkoss vele!</span>
-                </h1>
-
-                <!-- Subheadline -->
-                <p class="hero-subtitle">
-                    Ez az oldal egy AI ügynök segítségével épült. Létrehozásához a Google Antigravity,
-                    az Anthropic Claude nevű modellje, a Gemini és az n8n volt a segítségemre, melyet egy MCP szerveren
-                    keresztül értek el a modellek és segítettek annak létrehozásában.
-                </p>
-
-                <!-- CTA group -->
-                <div class="hero-cta-group">
-                    <a href="#syllabus" class="btn btn--primary btn--lg" id="cta-tematikak">
-                        Az AI a mindennapokban
-                    </a>
-                </div>
-
             </div>
-        </div>
 
-        <!-- Scroll hint -->
-        <div class="scroll-hint" aria-hidden="true">
-            <span class="scroll-hint-text">Görgess le</span>
-            <div class="scroll-hint-line"></div>
-        </div>
+            <!-- Scroll hint -->
+            <div class="scroll-hint" aria-hidden="true">
+                <span class="scroll-hint-text">Görgess le</span>
+                <div class="scroll-hint-line"></div>
+            </div>
 
-    </section>
+        </section>
 
 
-    <!-- Section divider -->
-    <div class="section-rainbow-divider" aria-hidden="true"></div>
+        <!-- Section divider -->
+        <div class="section-rainbow-divider" aria-hidden="true"></div>
 
-    <!-- =====================================================
+        <!-- =====================================================
        #ABOUT – Rólam szekció
   ====================================================== -->
-    <section id="about" aria-labelledby="about-title">
-        <div class="container">
-            <div class="about-grid">
-                <!-- Left: Timeline -->
-                <div>
-                    <div class="section-header anim-fade-in-up">
-                        <span class="section-label">Rólam</span>
-                        <div class="section-accent-line"></div>
-                        <h2 id="about-title">A mechatronikától<br />az automatizálásig.</h2>
-                        <p>Mechatronikai tanulmányaim és vállalkozói tapasztalataim kapcsán kerültek figyelmem
-                            középpontjába Az
-                            AI által megvalósítható megoldások</p>
-                    </div>
-                    <div class="timeline">
-                        <div class="timeline-item anim-fade-in-up anim-delay-100">
-                            <div class="timeline-dot">⚙️</div>
-                            <div class="timeline-body">
-                                <span class="timeline-year">2006 → alap képesítés</span>
-                                <div class="timeline-title">Mechatronikai végzettség</div>
-                                <p>2006-ban mechatronikai képesítést szereztem Budapesten, ahol mechanikát, elektronikát
-                                    és
-                                    informatikát tanulhattam. PLC-t programoztunk, nyomtatott áramköröket terveztünk és
-                                    építettünk, valamint CNC
-                                    forgácsoló gépeket is kezeltünk.</p>
+        <section id="about" aria-labelledby="about-title">
+            <div class="container">
+                <div class="about-grid">
+                    <!-- Left: Timeline -->
+                    <div>
+                        <div class="section-header anim-fade-in-up">
+                            <span class="section-label">Rólam</span>
+                            <div class="section-accent-line"></div>
+                            <h2 id="about-title">A mechatronikától<br />az automatizálásig.</h2>
+                            <p>Mechatronikai tanulmányaim és vállalkozói tapasztalataim kapcsán kerültek figyelmem
+                                középpontjába Az
+                                AI által megvalósítható megoldások</p>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item anim-fade-in-up anim-delay-100">
+                                <div class="timeline-dot">⚙️</div>
+                                <div class="timeline-body">
+                                    <span class="timeline-year">2006 → alap képesítés</span>
+                                    <div class="timeline-title">Mechatronikai végzettség</div>
+                                    <p>2006-ban mechatronikai képesítést szereztem Budapesten, ahol mechanikát,
+                                        elektronikát
+                                        és
+                                        informatikát tanulhattam. PLC-t programoztunk, nyomtatott áramköröket terveztünk
+                                        és
+                                        építettünk, valamint CNC
+                                        forgácsoló gépeket is kezeltünk.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item anim-fade-in-up anim-delay-200">
+                                <div class="timeline-dot" style="border-color:var(--color-accent);">🍃</div>
+                                <div class="timeline-body">
+                                    <span class="timeline-year timeline-year--accent">Vállalkozói évek</span>
+                                    <div class="timeline-title">Csokoládé és mikrozöldek</div>
+                                    <p>Szeretek alkotni, létrehozni, rendszereket megálmodni. Mindig is saját
+                                        vállalkozást
+                                        szerettem volna üzemeltetni.
+                                        2013-ban elindítottam első vállalkozásomat, aminek keretein belül mézzel készült
+                                        kézműves csokoládét gyártottunk és
+                                        értékesítettünk. A kakaó áremelkedés miatt ezt később felváltotta a mikrozöldek
+                                        termesztése és értékesítése.</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item anim-fade-in-up anim-delay-300">
+                                <div class="timeline-dot timeline-dot--success">🤖</div>
+                                <div class="timeline-body">
+                                    <span class="timeline-year timeline-year--success">2024-től AI, automatizálás,
+                                        ShiftCore</span>
+                                    <div class="timeline-title">ShiftCore - automatizálás kkv-knak</div>
+                                    <p>Bő egy éve intenzíven dolgozom AI-jal. 2025 végén létrehoztam a ShiftCore-t, ahol
+                                        magyar KKV-kank
+                                        segítek valódi folyamatokat automatizálni. <a href="https://www.shiftcore.hu"
+                                            target="_blank" rel="noopener">www.shiftcore.hu</a></p>
+                                </div>
                             </div>
                         </div>
-                        <div class="timeline-item anim-fade-in-up anim-delay-200">
-                            <div class="timeline-dot" style="border-color:var(--color-accent);">🍃</div>
-                            <div class="timeline-body">
-                                <span class="timeline-year timeline-year--accent">Vállalkozói évek</span>
-                                <div class="timeline-title">Csokoládé és mikrozöldek</div>
-                                <p>Szeretek alkotni, létrehozni, rendszereket megálmodni. Mindig is saját vállalkozást
-                                    szerettem volna üzemeltetni.
-                                    2013-ban elindítottam első vállalkozásomat, aminek keretein belül mézzel készült
-                                    kézműves csokoládét gyártottunk és
-                                    értékesítettünk. A kakaó áremelkedés miatt ezt később felváltotta a mikrozöldek
-                                    termesztése és értékesítése.</p>
-                            </div>
-                        </div>
-                        <div class="timeline-item anim-fade-in-up anim-delay-300">
-                            <div class="timeline-dot timeline-dot--success">🤖</div>
-                            <div class="timeline-body">
-                                <span class="timeline-year timeline-year--success">2024-től AI, automatizálás,
-                                    ShiftCore</span>
-                                <div class="timeline-title">ShiftCore - automatizálás kkv-knak</div>
-                                <p>Bő egy éve intenzíven dolgozom AI-jal. 2025 végén létrehoztam a ShiftCore-t, ahol
-                                    magyar KKV-kank
-                                    segítek valódi folyamatokat automatizálni. <a href="https://www.shiftcore.hu"
-                                        target="_blank" rel="noopener">www.shiftcore.hu</a></p>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <!-- Right: Quote card -->
-                <div class="about-quote-card anim-fade-in-up anim-delay-200">
-                    <div class="quote-block">
-                        <p class="quote-text">„Magyar kisvállalkozások számára kínálunk pár hónap alatt megtérülő,
-                            automatizálási megoldásokat.
-                            - Hagyd a szoftverre a papírmunkát! Foglalkozz azzal, ami igazán fontos."</p>
-                        <span class="quote-author"><strong>— Shiftcore —</strong> Automatizálási megoldások
-                            KKV-kank.</span>
-                    </div>
-                    <div class="card card--solid">
-                        <h3 style="font-size:0.9375rem; margin-bottom:1rem;">Amivel nap mint nap dolgozom</h3>
-                        <div class="tech-tags">
-                            <span class="tech-tag">Claude / Gemini</span>
-                            <span class="tech-tag">n8n munkafolyamatok</span>
-                            <span class="tech-tag">Supabase</span>
-                            <span class="tech-tag">Antigravity</span>
-                            <span class="tech-tag">Prompt Engineering</span>
-                            <span class="tech-tag">Prompt scaffolding</span>
-                            <span class="tech-tag">Antigravity</span>
-                            <span class="tech-tag">Netlify</span>
-                            <span class="tech-tag">MCP szerverek</span>
+                    <!-- Right: Quote card -->
+                    <div class="about-quote-card anim-fade-in-up anim-delay-200">
+                        <div class="quote-block">
+                            <p class="quote-text">„Magyar kisvállalkozások számára kínálunk pár hónap alatt megtérülő,
+                                automatizálási megoldásokat.
+                                - Hagyd a szoftverre a papírmunkát! Foglalkozz azzal, ami igazán fontos."</p>
+                            <span class="quote-author"><strong>— Shiftcore —</strong> Automatizálási megoldások
+                                KKV-kank.</span>
+                        </div>
+                        <div class="card card--solid">
+                            <h3 style="font-size:0.9375rem; margin-bottom:1rem;">Amivel nap mint nap dolgozom</h3>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Claude / Gemini</span>
+                                <span class="tech-tag">n8n munkafolyamatok</span>
+                                <span class="tech-tag">Supabase</span>
+                                <span class="tech-tag">Antigravity</span>
+                                <span class="tech-tag">Prompt Engineering</span>
+                                <span class="tech-tag">Prompt scaffolding</span>
+                                <span class="tech-tag">Antigravity</span>
+                                <span class="tech-tag">Netlify</span>
+                                <span class="tech-tag">MCP szerverek</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- =====================================================
+        <!-- =====================================================
        #HOOK – Képzőhely Fókusz szekció
   ====================================================== -->
-    <section id="hook" aria-labelledby="hook-title">
-        <div class="container">
-            <div class="section-header anim-fade-in-up">
-                <span class="section-label">AI a mindennapokban</span>
-                <div class="section-accent-line"></div>
-                <h2 id="hook-title">Manuális munkavégzés,<br /><span style="color:var(--color-primary);">vagy
-                        AI vezérelt hatékonyság?</span></h2>
-                <p>A mesterséges intelligencia használatával rengeteg idő felszabadítható, mivel azokat az
-                    adminisztratív tevékenységeket
-                    amiket eddig manuálisan végeztünk, mostmár kiszervezhetőek egy nagy nyelvi modellnek. Így több idő
-                    jut a tényleges kreatív munkára.</p>
-            </div>
-            <div class="hook-cards">
-                <!-- Bal: Régen -->
-                <div class="hook-card hook-card--euzert anim-fade-in-up">
-                    <div class="hook-card-logo"><span>⏱</span><span>Hogyan dolgoztunk eddig</span>
+        <section id="hook" aria-labelledby="hook-title">
+            <div class="container">
+                <div class="section-header anim-fade-in-up">
+                    <span class="section-label">AI a mindennapokban</span>
+                    <div class="section-accent-line"></div>
+                    <h2 id="hook-title">Manuális munkavégzés,<br /><span style="color:var(--color-primary);">vagy
+                            AI vezérelt hatékonyság?</span></h2>
+                    <p>A mesterséges intelligencia használatával rengeteg idő felszabadítható, mivel azokat az
+                        adminisztratív tevékenységeket
+                        amiket eddig manuálisan végeztünk, mostmár kiszervezhetőek egy nagy nyelvi modellnek. Így több
+                        idő
+                        jut a tényleges kreatív munkára.</p>
+                </div>
+                <div class="hook-cards">
+                    <!-- Bal: Régen -->
+                    <div class="hook-card hook-card--euzert anim-fade-in-up">
+                        <div class="hook-card-logo"><span>⏱</span><span>Hogyan dolgoztunk eddig</span>
+                        </div>
+                        <h3>Manuális munka, lassú folyamatok</h3>
+                        <p>Az információgyűjtés, dokumentumkezelés és riportolás
+                            órákat vett igénybe. Minden ismétlődő feladatot saját magunk végeztünk.
+                        </p>
+                        <div class="hook-feature-list">
+                            <div class="hook-feature-item"><span class="hook-feature-icon">−</span><span>Sablonok
+                                    kézi kitöltése, copy-paste alkalmazása</span></div>
+                            <div class="hook-feature-item"><span class="hook-feature-icon">−</span><span>Az
+                                    információkeresés
+                                    rengeteg időt vett igénybe</span></div>
+                            <div class="hook-feature-item"><span class="hook-feature-icon">−</span><span>A riportokat
+                                    és összefoglalókat manuálisan készítettük</span></div>
+                            <div class="hook-feature-item"><span class="hook-feature-icon">−</span><span>Kreatív
+                                    munkahányadra alig maradt idő és energia</span></div>
+                        </div>
                     </div>
-                    <h3>Manuális munka, lassú folyamatok</h3>
-                    <p>Az információgyűjtés, dokumentumkezelés és riportolás
-                        órákat vett igénybe. Minden ismétlődő feladatot saját magunk végeztünk.
-                    </p>
-                    <div class="hook-feature-list">
-                        <div class="hook-feature-item"><span class="hook-feature-icon">−</span><span>Sablonok
-                                kézi kitöltése, copy-paste alkalmazása</span></div>
-                        <div class="hook-feature-item"><span class="hook-feature-icon">−</span><span>Az
-                                információkeresés
-                                rengeteg időt vett igénybe</span></div>
-                        <div class="hook-feature-item"><span class="hook-feature-icon">−</span><span>A riportokat
-                                és összefoglalókat manuálisan készítettük</span></div>
-                        <div class="hook-feature-item"><span class="hook-feature-icon">−</span><span>Kreatív
-                                munkahányadra alig maradt idő és energia</span></div>
+                    <!-- Jobb: Most, AI-jal -->
+                    <div class="hook-card hook-card--certop anim-fade-in-up anim-delay-200">
+                        <div class="hook-card-logo"><span>⚡</span><span>Hogyan dolgozunk AI-jal</span></div>
+                        <h3>Gyorsabban, kreatívabban, pontosabban</h3>
+                        <p>Az AI elvégzi az ismétlődő feladatokat, mi pedig a stratégiai
+                            döntésekre fókuszálhatunk. A munkaminőség nő, az újonnan
+                            felszabaduló időt valódi alkotásra használhatjuk.</p>
+                        <div class="hook-feature-list">
+                            <div class="hook-feature-item"><span class="hook-feature-icon">✓</span><span>Sablonok,
+                                    riportok, e-mailek másodpercek alatt</span></div>
+                            <div class="hook-feature-item"><span class="hook-feature-icon">✓</span><span>Kérdezz, kapj
+                                    szakmai választ
+                                    azonnal – bármely témában</span></div>
+                            <div class="hook-feature-item"><span class="hook-feature-icon">✓</span><span>Automatikus
+                                    munkafolyamatok, amelyek 0/24-ben dolgoznak</span></div>
+                            <div class="hook-feature-item"><span class="hook-feature-icon">✓</span><span>Több
+                                    idő kreativitásra, ügyfelekre és stratégiára</span></div>
+                        </div>
                     </div>
                 </div>
-                <!-- Jobb: Most, AI-jal -->
-                <div class="hook-card hook-card--certop anim-fade-in-up anim-delay-200">
-                    <div class="hook-card-logo"><span>⚡</span><span>Hogyan dolgozunk AI-jal</span></div>
-                    <h3>Gyorsabban, kreatívabban, pontosabban</h3>
-                    <p>Az AI elvégzi az ismétlődő feladatokat, mi pedig a stratégiai
-                        döntésekre fókuszálhatunk. A munkaminőség nő, az újonnan
-                        felszabaduló időt valódi alkotásra használhatjuk.</p>
-                    <div class="hook-feature-list">
-                        <div class="hook-feature-item"><span class="hook-feature-icon">✓</span><span>Sablonok,
-                                riportok, e-mailek másodpercek alatt</span></div>
-                        <div class="hook-feature-item"><span class="hook-feature-icon">✓</span><span>Kérdezz, kapj
-                                szakmai választ
-                                azonnal – bármely témában</span></div>
-                        <div class="hook-feature-item"><span class="hook-feature-icon">✓</span><span>Automatikus
-                                munkafolyamatok, amelyek 0/24-ben dolgoznak</span></div>
-                        <div class="hook-feature-item"><span class="hook-feature-icon">✓</span><span>Több
-                                idő kreativitásra, ügyfelekre és stratégiára</span></div>
-                    </div>
-                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- =====================================================
+        <!-- =====================================================
        #SYLLABUS – Miért AI? szekció
    ====================================================== -->
-    <section id="syllabus" aria-labelledby="syllabus-title">
-        <div class="container">
-            <div class="section-header anim-fade-in-up">
-                <span class="section-label">Miért AI?</span>
-                <div class="section-accent-line"></div>
-                <h2 id="syllabus-title">Három ok, amiért érdemes<br />megtanulni az AI használatát.</h2>
-                <p>Az AI nem varázslat – hanem egy eszköz, amelyet ha helyesen használsz, valóban megváltoztatja a
-                    munkád
-                    tempóját és minőségét.</p>
+        <section id="syllabus" aria-labelledby="syllabus-title">
+            <div class="container">
+                <div class="section-header anim-fade-in-up">
+                    <span class="section-label">Miért AI?</span>
+                    <div class="section-accent-line"></div>
+                    <h2 id="syllabus-title">Három ok, amiért érdemes<br />megtanulni az AI használatát.</h2>
+                    <p>Az AI nem varázslat – hanem egy eszköz, amelyet ha helyesen használsz, valóban megváltoztatja a
+                        munkád
+                        tempóját és minőségét.</p>
+                </div>
+                <div class="syllabus-grid">
+                    <!-- Előny 1 -->
+                    <div class="syllabus-card anim-fade-in-up">
+                        <span class="syllabus-card-number">01</span>
+                        <span class="badge badge--primary">Idő</span>
+                        <h3>Időmegtakarítás</h3>
+                        <p>Az AI elvégzi az ismétlődő, rutinszerű feladatokat – te a lényegre és a kreatív döntésekre
+                            fókuszálhatsz.</p>
+                        <div class="syllabus-topics">
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"></span><span>Sablonszövegek és
+                                    riportok percek alatt</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"></span><span>Email-kezelés és
+                                    összefoglalók automatizálva</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"></span><span>Adatfeldolgozás
+                                    emberi
+                                    hibák nélkül</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"></span><span>Workflow-k,
+                                    amelyek
+                                    éjjel is futnak</span></div>
+                        </div>
+                    </div>
+                    <!-- Előny 2 -->
+                    <div class="syllabus-card anim-fade-in-up anim-delay-200">
+                        <span class="syllabus-card-number">02</span>
+                        <span class="badge">Tudás</span>
+                        <h3>Azonnali tudáshozzáférés</h3>
+                        <p>Kérdezz, kapj választ másodpercek alatt – bármilyen témában, bármilyen komplexitású kérdésre,
+                            azonnal.</p>
+                        <div class="syllabus-topics">
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"
+                                    style="background:var(--color-accent);"></span><span>Saját dokumentumok és
+                                    tudásbázis
+                                    bekötése (RAG)</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"
+                                    style="background:var(--color-accent);"></span><span>Kutatás és összehasonlítás
+                                    villámgyorsan</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"
+                                    style="background:var(--color-accent);"></span><span>Döntéstámogatás adatok
+                                    alapján</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"
+                                    style="background:var(--color-accent);"></span><span>Szakértői szintű válasz –
+                                    tapasztalat nélkül is</span></div>
+                        </div>
+                    </div>
+                    <!-- Előny 3 -->
+                    <div class="syllabus-card anim-fade-in-up anim-delay-400">
+                        <span class="syllabus-card-number">03</span>
+                        <span class="badge"
+                            style="background:rgba(16,185,129,0.12); color:var(--color-success); border-color:var(--color-success);">Minőség</span>
+                        <h3>Személyre szabott megoldások</h3>
+                        <p>Az AI nem sablont küld – az adott szituációra, kontextusra és igényekre szabja a választ,
+                            minden
+                            alkalommal.</p>
+                        <div class="syllabus-topics">
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"
+                                    style="background:var(--color-success);"></span><span>Oktatási anyag a konkrét
+                                    csoporthoz igazítva</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"
+                                    style="background:var(--color-success);"></span><span>Kommunikáció az adott ügyfél
+                                    hangnemén</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"
+                                    style="background:var(--color-success);"></span><span>Adaptív visszajelzés és
+                                    javítási
+                                    javaslatok</span></div>
+                            <div class="syllabus-topic"><span class="syllabus-topic-dot"
+                                    style="background:var(--color-success);"></span><span>Konzisztens minőség – emberi
+                                    változékonyság nélkül</span></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="syllabus-grid">
-                <!-- Előny 1 -->
-                <div class="syllabus-card anim-fade-in-up">
-                    <span class="syllabus-card-number">01</span>
-                    <span class="badge badge--primary">Idő</span>
-                    <h3>Időmegtakarítás</h3>
-                    <p>Az AI elvégzi az ismétlődő, rutinszerű feladatokat – te a lényegre és a kreatív döntésekre
-                        fókuszálhatsz.</p>
-                    <div class="syllabus-topics">
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"></span><span>Sablonszövegek és
-                                riportok percek alatt</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"></span><span>Email-kezelés és
-                                összefoglalók automatizálva</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"></span><span>Adatfeldolgozás emberi
-                                hibák nélkül</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"></span><span>Workflow-k, amelyek
-                                éjjel is futnak</span></div>
-                    </div>
-                </div>
-                <!-- Előny 2 -->
-                <div class="syllabus-card anim-fade-in-up anim-delay-200">
-                    <span class="syllabus-card-number">02</span>
-                    <span class="badge">Tudás</span>
-                    <h3>Azonnali tudáshozzáférés</h3>
-                    <p>Kérdezz, kapj választ másodpercek alatt – bármilyen témában, bármilyen komplexitású kérdésre,
-                        azonnal.</p>
-                    <div class="syllabus-topics">
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"
-                                style="background:var(--color-accent);"></span><span>Saját dokumentumok és tudásbázis
-                                bekötése (RAG)</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"
-                                style="background:var(--color-accent);"></span><span>Kutatás és összehasonlítás
-                                villámgyorsan</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"
-                                style="background:var(--color-accent);"></span><span>Döntéstámogatás adatok
-                                alapján</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"
-                                style="background:var(--color-accent);"></span><span>Szakértői szintű válasz –
-                                tapasztalat nélkül is</span></div>
-                    </div>
-                </div>
-                <!-- Előny 3 -->
-                <div class="syllabus-card anim-fade-in-up anim-delay-400">
-                    <span class="syllabus-card-number">03</span>
-                    <span class="badge"
-                        style="background:rgba(16,185,129,0.12); color:var(--color-success); border-color:var(--color-success);">Minőség</span>
-                    <h3>Személyre szabott megoldások</h3>
-                    <p>Az AI nem sablont küld – az adott szituációra, kontextusra és igényekre szabja a választ, minden
-                        alkalommal.</p>
-                    <div class="syllabus-topics">
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"
-                                style="background:var(--color-success);"></span><span>Oktatási anyag a konkrét
-                                csoporthoz igazítva</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"
-                                style="background:var(--color-success);"></span><span>Kommunikáció az adott ügyfél
-                                hangnemén</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"
-                                style="background:var(--color-success);"></span><span>Adaptív visszajelzés és javítási
-                                javaslatok</span></div>
-                        <div class="syllabus-topic"><span class="syllabus-topic-dot"
-                                style="background:var(--color-success);"></span><span>Konzisztens minőség – emberi
-                                változékonyság nélkül</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- =====================================================
+        <!-- =====================================================
        #TOOLS – AI Eszközök Showcase szekció
    ====================================================== -->
-    <section id="tools" aria-labelledby="tools-title">
-        <div class="container">
-            <div class="section-header anim-fade-in-up">
-                <span class="section-label">Az eszközkészlet</span>
-                <div class="section-accent-line"></div>
-                <h2 id="tools-title">Ezekkel az eszközökkel<br />készült ez az oldal is.</h2>
-                <p>Az oldal amit most olvasol, ezeknek az eszközöknek az együttműködésével
-                    jött létre.</p>
+        <section id="tools" aria-labelledby="tools-title">
+            <div class="container">
+                <div class="section-header anim-fade-in-up">
+                    <span class="section-label">Az eszközkészlet</span>
+                    <div class="section-accent-line"></div>
+                    <h2 id="tools-title">Ezekkel az eszközökkel<br />készült ez az oldal is.</h2>
+                    <p>Az oldal amit most olvasol, ezeknek az eszközöknek az együttműködésével
+                        jött létre.</p>
+                </div>
+                <div class="tools-grid">
+                    <!-- Antigravity -->
+                    <div class="tool-card anim-fade-in-up">
+                        <svg class="tool-card-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36"
+                            viewBox="0 0 24 24" fill="none" stroke="url(#grad-ag)" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <defs>
+                                <linearGradient id="grad-ag" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#0ea5e9" />
+                                    <stop offset="100%" stop-color="#8b5cf6" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M12 2a2 2 0 0 1 2 2c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2z" />
+                            <path d="M19 9a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v-6h1z" />
+                            <path d="M5 9a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1v-6H5z" />
+                            <rect x="6" y="7" width="12" height="12" rx="2" ry="2" />
+                            <line x1="9" y1="13" x2="9.01" y2="13" />
+                            <line x1="15" y1="13" x2="15.01" y2="13" />
+                        </svg>
+                        <div>
+                            <span class="tool-card-role">AI kódoló ügynök</span>
+                            <h3 class="tool-card-name">Antigravity</h3>
+                        </div>
+                        <p class="tool-card-desc">A Google DeepMind csapat AI ügynöke, aki ezt az oldalt is megírta.
+                            Önállóan kódol, tervez és dönt, emberi iránymutatások alapján.</p>
+                    </div>
+                    <!-- Claude -->
+                    <div class="tool-card anim-fade-in-up anim-delay-100">
+                        <svg class="tool-card-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36"
+                            viewBox="0 0 24 24" fill="none" stroke="url(#grad-claude)" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <defs>
+                                <linearGradient id="grad-claude" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#d97757" />
+                                    <stop offset="100%" stop-color="#f59e0b" />
+                                </linearGradient>
+                            </defs>
+                            <path
+                                d="M12 3c.132 5.4 4.6 9.868 10 10-5.4.132-9.868 4.6-10 10-.132-5.4-4.6-9.868-10-10 5.4-.132 9.868-4.6 10-10z" />
+                        </svg>
+                        <div>
+                            <span class="tool-card-role">Nagy nyelvi modell</span>
+                            <h3 class="tool-card-name">Claude (Anthropic)</h3>
+                        </div>
+                        <p class="tool-card-desc">Az Anthropic által fejlesztett modell, amely mélyen megért és pontosan
+                            fogalmaz. Komplex szövegek, elemzések és kreatív tartalmak motorja.</p>
+                    </div>
+                    <!-- Gemini -->
+                    <div class="tool-card anim-fade-in-up anim-delay-200">
+                        <svg class="tool-card-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36"
+                            viewBox="0 0 24 24" fill="none" stroke="url(#grad-gemini)" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <defs>
+                                <linearGradient id="grad-gemini" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#4285f4" />
+                                    <stop offset="50%" stop-color="#9b72cb" />
+                                    <stop offset="100%" stop-color="#d96570" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M12 2c.1 4.5 3.5 8 8 8-4.5 0-7.9 3.5-8 8-.1-4.5-3.5-8-8-8 4.5 0 7.9-3.5 8-8z" />
+                            <path
+                                d="M19 14c.05 1.5 1.45 2.95 2.95 3-1.5.05-2.9 1.45-2.95 2.95-.05-1.5-1.45-2.9-2.95-2.95 1.5-.05 2.9-1.45 2.95-3z" />
+                        </svg>
+                        <div>
+                            <span class="tool-card-role">Multimodális AI</span>
+                            <h3 class="tool-card-name">Google Gemini</h3>
+                        </div>
+                        <p class="tool-card-desc">A Google multimodális modellje, amely képet, szöveget és kódot
+                            egyaránt
+                            kezel. Kutatásban, összehasonlításban és tervezésben nélkülözhetetlen.</p>
+                    </div>
+                    <!-- n8n -->
+                    <div class="tool-card anim-fade-in-up anim-delay-300">
+                        <svg class="tool-card-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36"
+                            viewBox="0 0 24 24" fill="none" stroke="url(#grad-n8n)" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <defs>
+                                <linearGradient id="grad-n8n" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#ea435d" />
+                                    <stop offset="100%" stop-color="#f97316" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="18" cy="5" r="3" />
+                            <circle cx="6" cy="12" r="3" />
+                            <circle cx="18" cy="19" r="3" />
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                        </svg>
+                        <div>
+                            <span class="tool-card-role">Automatizációs platform</span>
+                            <h3 class="tool-card-name">n8n</h3>
+                        </div>
+                        <p class="tool-card-desc">Nyílt forráskódú workflow-automatizáló, amely összeköti az AI-t a
+                            valós
+                            üzleti folyamatokkal. Az oldal chatbotját is n8n hajtja majd.</p>
+                    </div>
+                </div>
             </div>
-            <div class="tools-grid">
-                <!-- Antigravity -->
-                <div class="tool-card anim-fade-in-up">
-                    <svg class="tool-card-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36"
-                        viewBox="0 0 24 24" fill="none" stroke="url(#grad-ag)" stroke-width="1.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <defs>
-                            <linearGradient id="grad-ag" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#0ea5e9" />
-                                <stop offset="100%" stop-color="#8b5cf6" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M12 2a2 2 0 0 1 2 2c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2z" />
-                        <path d="M19 9a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v-6h1z" />
-                        <path d="M5 9a2 2 0 0 0-2 2v2a2 2 0 0 0 2 2h1v-6H5z" />
-                        <rect x="6" y="7" width="12" height="12" rx="2" ry="2" />
-                        <line x1="9" y1="13" x2="9.01" y2="13" />
-                        <line x1="15" y1="13" x2="15.01" y2="13" />
-                    </svg>
-                    <div>
-                        <span class="tool-card-role">AI kódoló ügynök</span>
-                        <h3 class="tool-card-name">Antigravity</h3>
-                    </div>
-                    <p class="tool-card-desc">A Google DeepMind csapat AI ügynöke, aki ezt az oldalt is megírta.
-                        Önállóan kódol, tervez és dönt, emberi iránymutatások alapján.</p>
-                </div>
-                <!-- Claude -->
-                <div class="tool-card anim-fade-in-up anim-delay-100">
-                    <svg class="tool-card-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36"
-                        viewBox="0 0 24 24" fill="none" stroke="url(#grad-claude)" stroke-width="1.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <defs>
-                            <linearGradient id="grad-claude" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#d97757" />
-                                <stop offset="100%" stop-color="#f59e0b" />
-                            </linearGradient>
-                        </defs>
-                        <path
-                            d="M12 3c.132 5.4 4.6 9.868 10 10-5.4.132-9.868 4.6-10 10-.132-5.4-4.6-9.868-10-10 5.4-.132 9.868-4.6 10-10z" />
-                    </svg>
-                    <div>
-                        <span class="tool-card-role">Nagy nyelvi modell</span>
-                        <h3 class="tool-card-name">Claude (Anthropic)</h3>
-                    </div>
-                    <p class="tool-card-desc">Az Anthropic által fejlesztett modell, amely mélyen megért és pontosan
-                        fogalmaz. Komplex szövegek, elemzések és kreatív tartalmak motorja.</p>
-                </div>
-                <!-- Gemini -->
-                <div class="tool-card anim-fade-in-up anim-delay-200">
-                    <svg class="tool-card-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36"
-                        viewBox="0 0 24 24" fill="none" stroke="url(#grad-gemini)" stroke-width="1.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <defs>
-                            <linearGradient id="grad-gemini" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#4285f4" />
-                                <stop offset="50%" stop-color="#9b72cb" />
-                                <stop offset="100%" stop-color="#d96570" />
-                            </linearGradient>
-                        </defs>
-                        <path d="M12 2c.1 4.5 3.5 8 8 8-4.5 0-7.9 3.5-8 8-.1-4.5-3.5-8-8-8 4.5 0 7.9-3.5 8-8z" />
-                        <path
-                            d="M19 14c.05 1.5 1.45 2.95 2.95 3-1.5.05-2.9 1.45-2.95 2.95-.05-1.5-1.45-2.9-2.95-2.95 1.5-.05 2.9-1.45 2.95-3z" />
-                    </svg>
-                    <div>
-                        <span class="tool-card-role">Multimodális AI</span>
-                        <h3 class="tool-card-name">Google Gemini</h3>
-                    </div>
-                    <p class="tool-card-desc">A Google multimodális modellje, amely képet, szöveget és kódot egyaránt
-                        kezel. Kutatásban, összehasonlításban és tervezésben nélkülözhetetlen.</p>
-                </div>
-                <!-- n8n -->
-                <div class="tool-card anim-fade-in-up anim-delay-300">
-                    <svg class="tool-card-icon" xmlns="http://www.w3.org/2000/svg" width="36" height="36"
-                        viewBox="0 0 24 24" fill="none" stroke="url(#grad-n8n)" stroke-width="1.5"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <defs>
-                            <linearGradient id="grad-n8n" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#ea435d" />
-                                <stop offset="100%" stop-color="#f97316" />
-                            </linearGradient>
-                        </defs>
-                        <circle cx="18" cy="5" r="3" />
-                        <circle cx="6" cy="12" r="3" />
-                        <circle cx="18" cy="19" r="3" />
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                    </svg>
-                    <div>
-                        <span class="tool-card-role">Automatizációs platform</span>
-                        <h3 class="tool-card-name">n8n</h3>
-                    </div>
-                    <p class="tool-card-desc">Nyílt forráskódú workflow-automatizáló, amely összeköti az AI-t a valós
-                        üzleti folyamatokkal. Az oldal chatbotját is n8n hajtja majd.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- =====================================================
+        <!-- =====================================================
        #CHAT - RAG Chatbot szekció
    ====================================================== -->
-    <section id="chat" aria-labelledby="chat-title">
-        <div class="container">
-            <div class="section-header anim-fade-in-up">
-                <span class="section-label">Interaktív RAG</span>
-                <div class="section-accent-line"></div>
-                <h2 id="chat-title">Kérdezz egy elképzelt<br />prompt engineering kurzus tananyagáról.</h2>
-                <p>Bejelentkezés után közvetlenül a kurzus tartalmából kérdezhetsz és az AI ügynök a saját dokumentumaiból
-                    válaszol.</p>
-            </div>
-            <div class="chat-wrapper anim-fade-in-up">
-
-                <!-- CHAT GATE - nincs session -->
-                <div id="chat-gate" class="chat-gate">
-                    <div class="chat-gate-icon" aria-hidden="true">&#x1F4AC;</div>
-                    <div class="chat-gate-title">Bejelentkezés szükséges</div>
-                    <p class="chat-gate-desc">A chatbot kizárólag meghívott személyek számára érhető el.
-                        Jelentkezz be, és azonnal kérdezhetsz.</p>
-                    <button class="btn btn--primary btn--lg" id="chat-login-btn">Bejelentkezés Magic Linkkel</button>
+        <section id="chat" aria-labelledby="chat-title">
+            <div class="container">
+                <div class="section-header anim-fade-in-up">
+                    <span class="section-label">Interaktív RAG</span>
+                    <div class="section-accent-line"></div>
+                    <h2 id="chat-title">Kérdezz egy elképzelt<br />prompt engineering kurzus tananyagáról.</h2>
+                    <p>Bejelentkezés után közvetlenül a kurzus tartalmából kérdezhetsz és az AI ügynök a saját
+                        dokumentumaiból
+                        válaszol.</p>
                 </div>
+                <div class="chat-wrapper anim-fade-in-up">
 
-                <!-- CHAT PANEL - csak bejelentkezett usernek -->
-                <div id="chat-panel" class="chat-panel" style="display:none;">
-                    <div class="chat-header">
-                        <div class="chat-header-dot" aria-hidden="true"></div>
-                        <span class="chat-header-title">Tudásbázis – RAG Asszisztens</span>
-                        <span class="chat-header-sub">n8n · Powered by AI</span>
+                    <!-- CHAT PANEL - csak bejelentkezett usernek -->
+                    <div id="chat-panel" class="chat-panel">
+                        <div class="chat-header">
+                            <div class="chat-header-dot" aria-hidden="true"></div>
+                            <span class="chat-header-title">Tudásbázis – RAG Asszisztens</span>
+                            <span class="chat-header-sub">n8n · Powered by AI</span>
+                        </div>
+                        <div class="chat-messages" id="chat-messages" role="log" aria-live="polite"
+                            aria-label="Csevegő üzenetek"></div>
+                        <div class="chat-input-row">
+                            <textarea class="chat-input" id="chat-input"
+                                placeholder="Írj egy kérdést az Euzert tananyagból..." rows="1"
+                                aria-label="Chat üzenet"></textarea>
+                            <button class="chat-send-btn" id="chat-send-btn" aria-label="Üzenet küldése">↑</button>
+                        </div>
                     </div>
-                    <div class="chat-messages" id="chat-messages" role="log" aria-live="polite"
-                        aria-label="Csevegő üzenetek"></div>
-                    <div class="chat-input-row">
-                        <textarea class="chat-input" id="chat-input"
-                            placeholder="Írj egy kérdést az Euzert tananyagból..." rows="1"
-                            aria-label="Chat üzenet"></textarea>
-                        <button class="chat-send-btn" id="chat-send-btn" aria-label="Üzenet küldése">↑</button>
-                    </div>
+
                 </div>
-
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- =====================================================
-       MODAL OVERLAY + LOGIN MODAL
-  ====================================================== -->
-    <div id="modal-overlay" aria-hidden="true"></div>
-
-    <div id="login-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <button id="modal-close-btn" class="modal-close-btn" aria-label="Modál bezárása">✕</button>
-
-        <div class="modal-badge">
-            <span class="badge badge--primary">Hozzáférés igénylése</span>
-        </div>
-
-        <h2 class="modal-title" id="modal-title">Bejelentkezés</h2>
-        <p class="modal-subtitle">Add meg a meghívóddal kapott email-t. Küldünk egy one-click bejelentkezési linket.</p>
-
-        <!-- Login form -->
-        <form class="auth-form" id="login-form" novalidate>
-            <div id="auth-error" role="alert"></div>
-            <input type="email" id="login-email-input" class="input" placeholder="email@szervezet.hu"
-                autocomplete="email" required aria-label="Email cím" />
-            <button type="submit" class="btn btn--primary" id="login-submit-btn"
-                style="width:100%; justify-content:center;">
-                Magic Link küldése
-            </button>
-        </form>
-
-        <!-- Success state (JS mutatja) -->
-        <div id="login-success" aria-live="polite"></div>
-    </div>
+    </div><!-- APP WRAPPER VÉGE -->
 
     <!-- =====================================================
        SCRIPTS

@@ -1,0 +1,16 @@
+{
+    "mcpServers": {
+        "appwrite-api": {
+            "command": "uvx",
+            "args": [
+                "mcp-server-appwrite",
+                "--users"
+            ],
+            "env": {
+                "APPWRITE_PROJECT_ID": "69a40cb7002feaec083b",
+                "APPWRITE_API_KEY": "ide_masold_majd az api kulcsot",
+                "APPWRITE_ENDPOINT": "https://fra.cloud.appwrite.io/v1"
+            }
+        }
+    }
+}
